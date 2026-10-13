@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/config.php';
 
 /* ---------------- CART INITIALIZATION ---------------- */
 if (!isset($_SESSION['cart'])) {
@@ -13,9 +14,12 @@ if (!isset($_SESSION['cart_count'])) {
 if (isset($_GET['add_to_cart'])) {
 
     $item = [
-        'name'     => $_GET['name'],
-        'price'    => $_GET['price'],
-        'image'    => $_GET['image'],
+        'id'       => isset($_GET['id']) ? (int)$_GET['id'] : 0,
+        'name'     => $_GET['name'] ?? '',
+        'category' => $_GET['category'] ?? '',
+        'flavour'  => $_GET['flavour'] ?? '',
+        'price'    => (float)($_GET['price'] ?? 0),
+        'image'    => $_GET['image'] ?? '',
         'quantity' => 1
     ];
 
@@ -30,78 +34,108 @@ if (isset($_GET['add_to_cart'])) {
 $category = $_GET['category'] ?? '';
 $flavour  = $_GET['flavour'] ?? '';
 
-/* ---------------- PRODUCTS (NO SQL) ---------------- */
+/* ---------------- PRODUCTS ---------------- */
 $products = [
 
     // ===== CLASSIC =====
     [
-        'name' => 'Chocolate Chip Cookie',
+        'id'       => 7,
+        'name'     => 'Chocolate Chip Cookie',
         'category' => 'Classic',
-        'flavour' => 'Chocolate',
-        'price' => 650,
-        'images' => [
-            'images/classic chocolate.jpg',
-            'images/classic chocolate1.jpg',
-            'images/classic chocolate2.jpg'
+        'flavour'  => 'Chocolate',
+        'price'    => 650,
+        'images'   => [
+            'images/Classic chocolate.jpg',
+            'images/Classic chocolate1.jpg',
+            'images/Classic chocolate2.jpg'
         ]
     ],
     [
-        'name' => 'Vanilla Butter Cookie',
+        'id'       => 2,
+        'name'     => 'Vanilla Butter Cookie',
         'category' => 'Classic',
-        'flavour' => 'Vanilla',
-        'price' => 550,
-        'images' => [
-            'images/classic vanilla.jpg',
-            'images/classic vanilla2.jpg'
+        'flavour'  => 'Vanilla',
+        'price'    => 550,
+        'images'   => [
+            'images/Classic vanilla.jpg',
+            'images/Classic vanilla2.jpg'
         ]
     ],
 
     // ===== PREMIUM =====
     [
-        'name' => 'Strawberry Cream Cookie',
+        'id'       => 3,
+        'name'     => 'Strawberry Cream Cookie',
         'category' => 'Premium',
-        'flavour' => 'Strawberry',
-        'price' => 720,
-        'images' => [
-            'images/premium strawberry.jpg',
-            'images/premium strawberry1.jpg'
+        'flavour'  => 'Strawberry',
+        'price'    => 720,
+        'images'   => [
+            'images/Premium strawberry.jpg',
+            'images/Premium strawberry1.jpg'
         ]
     ],
     [
-        'name' => 'Double Chocolate Deluxe',
+        'id'       => 4,
+        'name'     => 'Double Chocolate Deluxe',
         'category' => 'Premium',
-        'flavour' => 'Chocolate',
-        'price' => 780,
-        'images' => [
-            'images/premium chocolate.jpg',
-            'images/premium chocolate1.jpg',
-            'images/premium chocolate2.jpg'
+        'flavour'  => 'Chocolate',
+        'price'    => 780,
+        'images'   => [
+            'images/Premium chocolate.jpg',
+            'images/Premium chocolate1.jpg',
+            'images/Premium chocolate2.jpg'
         ]
     ],
 
     // ===== HEALTHY =====
     [
-        'name' => 'Oatmeal Healthy Cookie',
+        'id'       => 5,
+        'name'     => 'Oatmeal Healthy Cookie',
         'category' => 'Healthy',
-        'flavour' => 'Oats',
-        'price' => 600,
-        'images' => [
+        'flavour'  => 'Oats',
+        'price'    => 600,
+        'images'   => [
             'images/Premium oats.jpg',
             'images/Premium oats2.jpg',
             'images/Premium oats3.jpg'
         ]
     ],
     [
-        'name' => 'Honey Almond Cookie',
+        'id'       => 6,
+        'name'     => 'Honey Almond Cookie',
         'category' => 'Healthy',
-        'flavour' => 'Almond',
-        'price' => 650,
-        'images' => [
+        'flavour'  => 'Almond',
+        'price'    => 650,
+        'images'   => [
             'images/Healthty almond1.jpg',
             'images/Healthty almond2.jpg'
         ]
     ],
 ];
+
+// Synchronize with database products (including any newly added products from admin)
+if (isset($conn) && !$conn->connect_error) {
+    $dbQuery = @mysqli_query($conn, "SELECT * FROM products ORDER BY id ASC");
+    if ($dbQuery) {
+        $existingNames = array_map('strtolower', array_column($products, 'name'));
+        while ($row = mysqli_fetch_assoc($dbQuery)) {
+            $nameLower = strtolower($row['name']);
+            $key = array_search($nameLower, $existingNames);
+            if ($key !== false) {
+                $products[$key]['id'] = (int)$row['id'];
+            } else {
+                $products[] = [
+                    'id'       => (int)$row['id'],
+                    'name'     => $row['name'],
+                    'category' => $row['category'],
+                    'flavour'  => $row['flavour'],
+                    'price'    => (float)$row['price'],
+                    'images'   => [!empty($row['image']) ? $row['image'] : 'images/Biskat.jpg']
+                ];
+            }
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -162,8 +196,26 @@ font-size:18px;font-weight:600;color:var(--primary-pink-dark);margin:10px 0
 }
 
 .add-cart-btn{
-padding:12px 26px;background:var(--primary-pink);color:#fff;
-border-radius:25px;text-decoration:none;font-weight:600
+display:inline-block;padding:12px 26px;background:var(--primary-pink);color:#fff;
+border-radius:25px;text-decoration:none;font-weight:600;transition:.3s;
+}
+.add-cart-btn:hover{background:var(--primary-pink-dark);transform:translateY(-2px);}
+
+/* Responsive adjustments for shop */
+@media (max-width: 768px) {
+  .shop-page{padding:40px 15px;}
+  .shop-title{margin-bottom:25px;}
+  .shop-title h2{font-size:28px;}
+  .filter-box{flex-wrap:wrap;padding:18px;gap:12px;margin-bottom:35px;}
+  .filter-box select, .filter-box button{flex:1 1 200px;width:100%;}
+  .product-grid{gap:25px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));}
+}
+
+@media (max-width: 500px) {
+  .product-grid{grid-template-columns:1fr;}
+  .filter-box{flex-direction:column;}
+  .filter-box select, .filter-box button{width:100%;}
+  .main-img img{height:200px;}
 }
 </style>
 </head>
@@ -242,7 +294,10 @@ $found=true;
 
 <a class="add-cart-btn"
 href="shop.php?add_to_cart=1
+&id=<?= $p['id'] ?? 0; ?>
 &name=<?= urlencode($p['name']); ?>
+&category=<?= urlencode($p['category']); ?>
+&flavour=<?= urlencode($p['flavour']); ?>
 &price=<?= $p['price']; ?>
 &image=<?= urlencode($p['images'][0]); ?>">
 Add to Cart

@@ -17,13 +17,27 @@
 }
 
 /* =========================
-   GLOBAL STYLES
+   GLOBAL STYLES & RESET
 ========================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
 body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
   background: var(--background-light);
   color: var(--text-dark);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }
 
 /* =========================
@@ -284,7 +298,161 @@ footer {
   background: var(--primary-pink-dark);
   color: var(--white);
   text-align: center;
-  padding: 18px 0;
+  padding: 18px 15px;
   margin-top: 40px;
   font-size: 14px;
+}
+
+/* ==========================================================
+   RESPONSIVE DESIGN (TABLETS, PHONES, SMALL SCREENS)
+========================================================== */
+
+/* Tablet & Mobile (<= 992px) */
+@media (max-width: 992px) {
+  .header {
+    padding: 14px 25px;
+  }
+  .navbar {
+    gap: 16px;
+  }
+  .hero-text h1 {
+    font-size: 52px;
+  }
+}
+
+/* Mobile Devices (<= 768px) */
+@media (max-width: 768px) {
+  .header {
+    padding: 12px 18px;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-size: 20px;
+    letter-spacing: 1px;
+  }
+
+  .header-right {
+    gap: 12px;
+  }
+
+  .navbar {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    gap: 16px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    flex-wrap: wrap;
+  }
+
+  .navbar a {
+    font-size: 14px;
+  }
+
+  .hero {
+    height: 65vh;
+    min-height: 400px;
+  }
+
+  .hero-text {
+    padding: 0 20px;
+  }
+
+  .hero-text h1 {
+    font-size: 38px;
+    line-height: 1.2;
+  }
+
+  .hero-text h2 {
+    font-size: 22px;
+  }
+
+  .hero-text p {
+    font-size: 16px;
+  }
+
+  .btn {
+    padding: 12px 26px;
+    font-size: 15px;
+  }
+
+  .features {
+    padding: 50px 15px;
+  }
+
+  .features h2 {
+    font-size: 26px;
+    margin-bottom: 30px;
+  }
+
+  .features-grid {
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .welcome-banner {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+    padding: 16px 20px;
+  }
+
+  .chat-btn {
+    bottom: 15px;
+    right: 15px;
+    padding: 12px 18px;
+    font-size: 13px;
+  }
+}
+
+/* Small Phones (<= 480px) */
+@media (max-width: 480px) {
+  .header {
+    padding: 10px 12px;
+  }
+
+  .logo {
+    font-size: 18px;
+  }
+
+  .navbar {
+    gap: 10px;
+  }
+
+  .navbar a {
+    font-size: 13px;
+  }
+
+  .hero {
+    height: 55vh;
+    min-height: 350px;
+  }
+
+  .hero-text h1 {
+    font-size: 28px;
+  }
+
+  .hero-text h2 {
+    font-size: 18px;
+  }
+
+  .hero-text p {
+    font-size: 14px;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-card {
+    padding: 25px 20px;
+  }
+
+  .chat-btn {
+    padding: 10px 14px;
+    font-size: 12px;
+  }
 }

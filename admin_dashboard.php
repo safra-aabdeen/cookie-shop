@@ -3,7 +3,7 @@ session_start();
 
 /* Check admin login */
 if(!isset($_SESSION['user_type']) || $_SESSION['user_type'] != 'admin'){
-    header('location: manage_products.php');
+    header('location: admin_login.php');
     exit;
 }
 
@@ -63,6 +63,22 @@ footer{background:var(--primary-pink-dark);color:#fff;text-align:center;padding:
 
 /* Animations */
 @keyframes fadeIn{to{opacity:1;transform:translateY(0);}}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .header{padding:12px 18px;}
+  .logo{font-size:20px;}
+  .dashboard{margin:20px auto;padding:0 15px;}
+  .welcome-banner{flex-direction:column;text-align:center;gap:12px;padding:18px 15px;margin-bottom:25px;}
+  .welcome-banner h2{font-size:22px;}
+  .cards{grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:15px;margin-bottom:25px;}
+  .card{padding:18px 12px;}
+  .card span{font-size:30px;}
+  .card h3{font-size:15px;}
+  .card p{font-size:16px;}
+  .quick-links{gap:12px;margin-bottom:25px;}
+  .quick-links a{flex:1 1 100%;padding:14px;}
+}
 </style>
 </head>
 <body>
@@ -71,7 +87,7 @@ footer{background:var(--primary-pink-dark);color:#fff;text-align:center;padding:
 <header class="header">
 <div class="logo">G🍪🍪dies Cookies Admin</div>
 <div class="navbar header-right">
-<a href="index.php" class="logout-btn">Logout</a>
+<a href="logout.php" class="logout-btn">Logout</a>
 </div>
 </header>
 

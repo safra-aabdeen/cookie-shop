@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT'].'/Cookie/config.php';
+require_once __DIR__ . '/config.php';
 
 $order_success = false;
 
@@ -32,10 +32,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['cart'])) {
     );
 
     foreach ($_SESSION['cart'] as $item) {
+        $prod_id = isset($item['id']) && (int)$item['id'] > 0 ? (int)$item['id'] : 0;
+        
+        // If product_id is not set or 0, find it in the products table by name
+        if ($prod_id <= 0 && !empty($item['name'])) {
+            $stmt_p = $conn->prepare("SELECT id FROM products WHERE name = ? LIMIT 1");
+            $stmt_p->bind_param("s", $item['name']);
+            $stmt_p->execute();
+            $res_p = $stmt_p->get_result();
+            if ($row_p = $res_p->fetch_assoc()) {
+                $prod_id = (int)$row_p['id'];
+            }
+            $stmt_p->close();
+        }
+
+        // Fallback: If still not found, create a product record so it has an ID
+        if ($prod_id <= 0 && !empty($item['name'])) {
+            $stmt_ins = $conn->prepare("INSERT INTO products (name, category, flavour, price, image) VALUES (?, ?, ?, ?, ?)");
+            $cat = $item['category'] ?? 'Classic';
+            $flav = $item['flavour'] ?? 'Classic';
+            $prc = (float)($item['price'] ?? 0);
+            $img = $item['image'] ?? 'images/Biskat.jpg';
+            $stmt_ins->bind_param("sssds", $item['name'], $cat, $flav, $prc, $img);
+            $stmt_ins->execute();
+            $prod_id = (int)$conn->insert_id;
+            $stmt_ins->close();
+        }
+
         $item_stmt->bind_param(
             "iiid",
             $order_id,
-            $item['id'],
+            $prod_id,
             $item['quantity'],
             $item['price']
         );
@@ -67,16 +94,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['cart'])) {
 .checkout-title h2{font-size:36px;color:var(--primary-pink-dark)}
 
 .cart-summary{max-width:900px;margin:auto;background:#fff;padding:25px;border-radius:18px;
-box-shadow:0 6px 20px rgba(0,0,0,.08);margin-bottom:30px;}
-.cart-summary table{width:100%;border-collapse:collapse}
+box-shadow:0 6px 20px rgba(0,0,0,.08);margin-bottom:30px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.cart-summary table{width:100%;min-width:480px;border-collapse:collapse}
 .cart-summary th, .cart-summary td{text-align:center;padding:12px;border-bottom:1px solid #eee}
-.cart-summary th{background:var(--primary-pink-dark);color:#fff;font-weight:500}
+.cart-summary th{background:var(--primary-pink-dark);color:#fff;font-weight:500;white-space:nowrap}
 .cart-summary img{width:60px;height:60px;object-fit:cover;border-radius:8px}
 
 .checkout-form{max-width:500px;margin:auto;background:#fff;padding:25px;border-radius:18px;
 box-shadow:0 6px 20px rgba(0,0,0,.08);}
 .checkout-form input, .checkout-form textarea{
-width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #ddd;font-family:'Poppins',sans-serif
+width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #ddd;font-family:'Poppins',sans-serif;
+box-sizing:border-box;
 }
 .checkout-form button{
 padding:12px 20px;background:var(--primary-pink);color:#fff;font-weight:600;
@@ -87,6 +115,15 @@ transition:.3s
 
 .success-msg{text-align:center;background:#d4edda;color:#155724;padding:15px;
 border-radius:12px;margin-bottom:20px;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .checkout-page{padding:40px 15px;}
+  .checkout-title{margin-bottom:25px;}
+  .checkout-title h2{font-size:28px;}
+  .cart-summary{padding:15px;}
+  .checkout-form{padding:20px 15px;}
+}
 </style>
 </head>
 

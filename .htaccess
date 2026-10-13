@@ -1,0 +1,18 @@
+# ==========================================
+# Apache Security & Configuration (.htaccess)
+# ==========================================
+
+# 1. Protect database dumps and configuration files from direct browser access
+<FilesMatch "\.(sql|log|ini|env|git.*)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# 2. Disable directory listing for security
+Options -Indexes
+
+# 3. Default index file
+DirectoryIndex index.php index.html
+
+# 4. Default character set
+AddDefaultCharset UTF-8

@@ -1,12 +1,12 @@
 <?php
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Cookie/config.php';
+require_once __DIR__ . '/config.php';
 
 /* ======================
    Admin Authentication
 ====================== */
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
-    header("Location: login.php");
+    header("Location: admin_login.php");
     exit;
 }
 
@@ -39,37 +39,49 @@ $result = $conn->query(
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin | Manage Messages</title>
 
 <style>
+*, *::before, *::after { box-sizing: border-box; }
 body{
     font-family: Arial, sans-serif;
     background:#fffafc;
-    padding:30px;
+    padding:25px 15px;
     max-width:1000px;
     margin:auto;
+    overflow-x:hidden;
 }
 h2{
     text-align:center;
     color:#e86a92;
     margin-bottom:25px;
+    font-size:24px;
+}
+.table-responsive{
+    width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    background:#fff;
+    border-radius:10px;
+    box-shadow:0 10px 25px rgba(0,0,0,.1);
+    margin-bottom:20px;
 }
 table{
     width:100%;
+    min-width:650px;
     border-collapse:collapse;
     background:#fff;
-    border-radius:10px;
-    overflow:hidden;
-    box-shadow:0 10px 25px rgba(0,0,0,.1);
 }
 th, td{
-    padding:15px;
+    padding:14px;
     border-bottom:1px solid #eee;
     vertical-align:top;
 }
 th{
     background:#f7b2c4;
     color:#fff;
+    white-space:nowrap;
 }
 tr:hover{
     background:#fff0f6;
@@ -84,24 +96,20 @@ tr:hover{
 }
 .back-btn{
     display:inline-block;
-    margin-top:20px;
+    margin-top:10px;
     background:#e86a92;
     color:#fff;
     padding:10px 18px;
     border-radius:8px;
     text-decoration:none;
+    transition:.3s;
 }
-.logout{
-    float:right;
-    margin-top:-40px;
-}
-.logout a{
-    color:#e86a92;
-    font-weight:bold;
-    text-decoration:none;
-}
-.logout a:hover{
-    text-decoration:underline;
+.back-btn:hover{opacity:.9;}
+
+@media (max-width: 600px) {
+  body{padding:15px 10px;}
+  h2{font-size:20px;}
+  th, td{padding:10px 8px;font-size:13px;}
 }
 </style>
 
@@ -118,6 +126,7 @@ function confirmDelete(){
 <h2>📬 Manage Contact Messages</h2>
 
 <?php if ($result && $result->num_rows > 0): ?>
+<div class="table-responsive">
 <table>
 <thead>
 <tr>
@@ -148,6 +157,7 @@ function confirmDelete(){
 <?php endwhile; ?>
 </tbody>
 </table>
+</div>
 
 
 

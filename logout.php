@@ -5,7 +5,7 @@ session_start();
 session_unset();
 session_destroy();
 
-// Redirect to login page
-header("Location:admin_login.php");
+// Redirect to Home page
+header("Location: index.php");
 exit;
 ?>

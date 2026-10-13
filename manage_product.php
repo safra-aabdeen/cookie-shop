@@ -1,10 +1,10 @@
 <?php
 session_start();
-require 'config.php';
+require_once __DIR__ . '/config.php';
 
 /* Admin check */
 if(!isset($_SESSION['user_type']) || $_SESSION['user_type'] != 'admin'){
-    header('location: login.php');
+    header('location: admin_login.php');
     exit;
 }
 
@@ -17,34 +17,45 @@ $result = mysqli_query($conn, $query);
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Manage Products | Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
-body{font-family:'Poppins',sans-serif;background:#fffafc;margin:0;padding:0;}
-.container{max-width:1200px;margin:40px auto;padding:20px;}
-h2{text-align:center;color:#e86a92;margin-bottom:30px;}
+*, *::before, *::after { box-sizing: border-box; }
+body{font-family:'Poppins',sans-serif;background:#fffafc;margin:0;padding:0;overflow-x:hidden;}
+.container{max-width:1200px;margin:30px auto;padding:15px;}
+h2{text-align:center;color:#e86a92;margin-bottom:25px;font-size:26px;}
 
-table{width:100%;border-collapse:collapse;background:#fff;
-box-shadow:0 10px 30px rgba(0,0,0,.1);border-radius:12px;overflow:hidden;}
+.table-responsive{
+width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;
+border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.1);background:#fff;margin-bottom:20px;
+}
+table{width:100%;min-width:650px;border-collapse:collapse;background:#fff;}
 
 th,td{padding:14px;text-align:center;}
-th{background:#f7b2c4;color:#fff;font-weight:500;}
+th{background:#f7b2c4;color:#fff;font-weight:500;white-space:nowrap;}
 tr:nth-child(even){background:#fff0f6;}
 
-img{width:70px;border-radius:10px;}
+img{width:60px;height:60px;object-fit:cover;border-radius:10px;}
 
-.btn{padding:6px 14px;border-radius:6px;text-decoration:none;font-size:14px;}
+.btn{padding:6px 14px;border-radius:6px;text-decoration:none;font-size:14px;display:inline-block;margin:2px;}
 .edit{background:#6fcf97;color:#fff;}
 .delete{background:#eb5757;color:#fff;}
 
 .add-btn{
-display:inline-block;margin-bottom:20px;
+display:inline-block;margin-bottom:15px;
 background:#e86a92;color:#fff;
 padding:10px 18px;border-radius:8px;
-text-decoration:none;font-weight:500;
+text-decoration:none;font-weight:500;transition:.3s;
 }
 .add-btn:hover{opacity:.9;}
+
+@media (max-width: 600px) {
+  .container{padding:10px;}
+  h2{font-size:22px;}
+  th,td{padding:10px 8px;font-size:13px;}
+}
 </style>
 </head>
 
@@ -55,6 +66,7 @@ text-decoration:none;font-weight:500;
 
 <a href="add_product.php" class="add-btn">+ Add New Product</a>
 
+<div class="table-responsive">
 <table>
 <tr>
 <th>ID</th>
@@ -84,8 +96,8 @@ Delete</a>
 </tr>
 <?php } ?>
 
-</table><br>
-<br>
+</table>
+</div>
 
 <a href="admin_dashboard.php" class="add-btn"> ←Back to Dashboard</a>
 

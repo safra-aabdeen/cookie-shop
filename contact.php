@@ -2,7 +2,7 @@
 session_start();
 
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/Cookie/config.php';
+require_once __DIR__ . '/config.php';
 
 $success = false;
 $error = '';
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 @keyframes fadeIn{to{opacity:1;transform:translateY(0);}}
 
 /* Contact Section */
-.contact-section{max-width:1100px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:50px;align-items:start;opacity:0;transform:translateY(20px);animation:fadeIn 1.2s forwards;}
+.contact-section{max-width:1100px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:40px;align-items:start;opacity:0;transform:translateY(20px);animation:fadeIn 1.2s forwards;}
 .contact-section img{width:100%;border-radius:25px;box-shadow:0 8px 30px rgba(0,0,0,0.1);transition:transform .4s}
 .contact-section img:hover{transform:scale(1.05);}
 
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 .contact-form{background:#fff;padding:30px;border-radius:25px;box-shadow:0 10px 30px rgba(0,0,0,0.1);transition:.4s;opacity:0;transform:translateY(20px);}
 .contact-form input, .contact-form textarea{
 width:100%;padding:14px;margin:10px 0;border-radius:12px;border:1px solid #ddd;font-family:'Poppins',sans-serif;
-font-size:15px;
+font-size:15px;box-sizing:border-box;
 }
 .contact-form button{
 padding:14px 20px;background:var(--primary-pink);color:#fff;font-weight:600;
@@ -96,6 +96,17 @@ border-radius:15px;margin-bottom:20px;box-shadow:0 6px 20px rgba(0,0,0,.1);opaci
 .contact-info p{font-size:15px;color:#555;margin-bottom:10px;}
 .contact-info a{color:var(--primary-pink-dark);text-decoration:none;font-weight:500;}
 .contact-info a:hover{color:var(--primary-pink);}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .contact-page{padding:40px 15px;}
+  .contact-title{margin-bottom:30px;}
+  .contact-title h2{font-size:28px;}
+  .contact-title p{font-size:15px;}
+  .contact-section{grid-template-columns:1fr;gap:25px;}
+  .contact-form{padding:22px 18px;}
+  .contact-info{padding:20px 18px;}
+}
 </style>
 </head>
 <body>

@@ -44,17 +44,18 @@ foreach ($_SESSION['cart'] as $item) {
 .cart-title h2{font-size:36px;color:var(--primary-pink-dark)}
 
 .cart-table{max-width:1000px;margin:auto;background:#fff;
-border-radius:15px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.08);}
-.cart-table table{width:100%;border-collapse:collapse}
+border-radius:15px;overflow:hidden;overflow-x:auto;-webkit-overflow-scrolling:touch;box-shadow:0 6px 20px rgba(0,0,0,.08);}
+.cart-table table{width:100%;min-width:600px;border-collapse:collapse}
 .cart-table th, .cart-table td{text-align:center;padding:15px;border-bottom:1px solid #eee}
-.cart-table th{background:var(--primary-pink-dark);color:#fff;font-weight:500}
+.cart-table th{background:var(--primary-pink-dark);color:#fff;font-weight:500;white-space:nowrap}
 .cart-table img{width:70px;height:70px;object-fit:cover;border-radius:8px}
 
 .remove-btn{
 padding:6px 12px;background:#ff6b6b;color:#fff;
 border-radius:8px;text-decoration:none;font-weight:600;
-display:inline-block
+display:inline-block;transition:.3s;
 }
+.remove-btn:hover{opacity:.9;}
 
 .total-section{text-align:right;max-width:1000px;margin:20px auto;font-size:20px;font-weight:600;color:var(--accent-cookie)}
 
@@ -65,6 +66,15 @@ color:#fff;font-weight:600;border-radius:25px;text-decoration:none;
 transition:.3s
 }
 .checkout-btn:hover{background:var(--primary-pink-dark)}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .cart-page{padding:40px 15px;}
+  .cart-title{margin-bottom:25px;}
+  .cart-title h2{font-size:28px;}
+  .total-section{text-align:center;font-size:18px;margin:15px auto;}
+  .checkout-btn{width:100%;max-width:280px;padding:14px 20px;}
+}
 </style>
 </head>
 <body>

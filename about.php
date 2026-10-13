@@ -28,7 +28,7 @@ if (!isset($_SESSION['cart_count'])) {
 @keyframes fadeIn{to{opacity:1;transform:translateY(0);}}
 
 /* Story Section */
-.about-section{max-width:1200px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:50px;align-items:center;opacity:0;transform:translateY(20px);animation:fadeIn 1.2s forwards;}
+.about-section{max-width:1200px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:40px;align-items:center;opacity:0;transform:translateY(20px);animation:fadeIn 1.2s forwards;}
 .about-section img{width:100%;border-radius:25px;box-shadow:0 8px 30px rgba(0,0,0,0.1);transition:transform .4s}
 .about-section img:hover{transform:scale(1.05);}
 
@@ -39,7 +39,7 @@ if (!isset($_SESSION['cart_count'])) {
 .team-section{margin-top:80px;text-align:center;opacity:0;transform:translateY(20px);animation:fadeIn 1.4s forwards;}
 .team-section h2{font-size:36px;color:var(--primary-pink-dark);margin-bottom:50px}
 
-.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:30px;max-width:1100px;margin:auto}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:25px;max-width:1100px;margin:auto}
 
 .team-card{background:#fff;padding:30px;border-radius:25px;box-shadow:0 10px 30px rgba(0,0,0,0.1);transition:.4s;opacity:0;transform:translateY(20px);}
 .team-card:hover{transform:translateY(-10px) scale(1.03);}
@@ -47,6 +47,23 @@ if (!isset($_SESSION['cart_count'])) {
 .team-card img:hover{transform:scale(1.1);}
 .team-card h4{color:var(--primary-pink-dark);margin-bottom:5px;font-size:20px;font-weight:600;}
 .team-card p{font-size:15px;color:#777;line-height:1.5;}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .about-page{padding:40px 15px;}
+  .about-title{margin-bottom:30px;}
+  .about-title h2{font-size:28px;}
+  .about-title p{font-size:15px;}
+  .about-section{grid-template-columns:1fr;gap:25px;text-align:center;}
+  .about-text h3{font-size:24px;}
+  .team-section{margin-top:50px;}
+  .team-section h2{font-size:28px;margin-bottom:30px;}
+  .team-grid{gap:20px;}
+}
+
+@media (max-width: 480px) {
+  .team-grid{grid-template-columns:1fr;}
+}
 
 /* Footer adjustment */
 footer{margin-top:60px;}

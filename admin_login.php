@@ -32,10 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <link rel="stylesheet" href="style.css">
 
 <style>
-body{margin:0;padding:0;font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#f4a7b9,#c6c9ea);display:flex;align-items:center;justify-content:center;height:100vh;}
-.login-card{background:#fff;padding:40px 35px;border-radius:25px;box-shadow:0 10px 30px rgba(0,0,0,.1);width:350px;text-align:center;opacity:0;transform:translateY(20px);animation:fadeIn 1s forwards;}
-.login-card h2{color:var(--primary-pink-dark);margin-bottom:25px;}
-.login-card input{width:100%;padding:14px;margin:12px 0;border-radius:12px;border:1px solid #ddd;font-size:15px;}
+body{margin:0;padding:20px 15px;font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#f4a7b9,#c6c9ea);display:flex;align-items:center;justify-content:center;min-height:100vh;box-sizing:border-box;}
+.login-card{background:#fff;padding:35px 25px;border-radius:25px;box-shadow:0 10px 30px rgba(0,0,0,.1);width:100%;max-width:380px;text-align:center;opacity:0;transform:translateY(20px);animation:fadeIn 1s forwards;box-sizing:border-box;}
+.login-card h2{color:var(--primary-pink-dark);margin-bottom:20px;}
+.login-card input{width:100%;padding:14px;margin:10px 0;border-radius:12px;border:1px solid #ddd;font-size:15px;box-sizing:border-box;}
 .login-card button{width:100%;padding:14px;background:var(--primary-pink);color:#fff;font-weight:600;border:none;border-radius:25px;cursor:pointer;margin-top:15px;transition:.3s;}
 .login-card button:hover{background:var(--primary-pink-dark);transform:translateY(-3px);}
 .error-msg{color:#d8000c;background:#ffd2d2;padding:10px;border-radius:12px;margin-bottom:10px;font-size:14px;}

@@ -1,10 +1,10 @@
 <?php
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT'].'/Cookie/config.php';
+require_once __DIR__ . '/config.php';
 
 /* Admin check */
 if(!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin'){
-    header("Location: login.php");
+    header("Location: admin_login.php");
     exit;
 }
 
@@ -18,19 +18,33 @@ if(isset($_POST['update_status'])){
     $stmt->execute();
 }
 
+// Auto-heal legacy order items that have missing product_id
+@$conn->query("
+    UPDATE order_items oi
+    JOIN products p ON oi.price = p.price
+    SET oi.product_id = p.id
+    WHERE (oi.product_id IS NULL OR oi.product_id = 0)
+");
+
 /* Fetch orders with product info */
 $query = "
 SELECT 
     orders.id,
     orders.user_id,
-    COALESCE(GROUP_CONCAT(products.name SEPARATOR ', '), 'No products') AS product_names,
-    SUM(order_items.quantity) AS quantity,
+    COALESCE(NULLIF(GROUP_CONCAT(DISTINCT products.name SEPARATOR ', '), ''), 'No products') AS product_names,
+    COALESCE(SUM(order_items.quantity), 0) AS quantity,
     orders.total_price,
     orders.status,
     orders.order_date
 FROM orders
 LEFT JOIN order_items ON orders.id = order_items.order_id
-LEFT JOIN products ON order_items.id = products.id
+LEFT JOIN products ON (
+    order_items.product_id = products.id
+    OR (
+        (order_items.product_id IS NULL OR order_items.product_id = 0)
+        AND order_items.price = products.price
+    )
+)
 
 GROUP BY orders.id, orders.user_id, orders.total_price, orders.status, orders.order_date
 ORDER BY orders.order_date DESC
@@ -46,26 +60,30 @@ if(!$result){
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Manage Orders | Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 <style>
-body{font-family:Poppins,sans-serif;background:#fffafc;margin:0;padding:0;}
-.container{max-width:1200px;margin:40px auto;padding:20px;}
-h2{text-align:center;color:#e86a92;margin-bottom:30px;}
+*, *::before, *::after { box-sizing: border-box; }
+body{font-family:Poppins,sans-serif;background:#fffafc;margin:0;padding:0;overflow-x:hidden;}
+.container{max-width:1200px;margin:30px auto;padding:15px;}
+h2{text-align:center;color:#e86a92;margin-bottom:25px;font-size:26px;}
 
+.table-responsive{
+width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;
+border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.1);background:#fff;margin-bottom:20px;
+}
 table{
-width:100%;border-collapse:collapse;background:#fff;
-box-shadow:0 10px 30px rgba(0,0,0,.1);
-border-radius:12px;overflow:hidden;
+width:100%;min-width:650px;border-collapse:collapse;background:#fff;
 }
 th,td{padding:14px;text-align:center;}
-th{background:#f7b2c4;color:#fff;}
+th{background:#f7b2c4;color:#fff;white-space:nowrap;}
 tr:nth-child(even){background:#fff0f6;}
 
-select{padding:6px;border-radius:6px;}
+select{padding:6px;border-radius:6px;border:1px solid #ddd;}
 button{
 padding:6px 12px;border:none;border-radius:6px;
-background:#e86a92;color:#fff;cursor:pointer;
+background:#e86a92;color:#fff;cursor:pointer;transition:.3s;
 }
 button:hover{opacity:.9;}
 
@@ -75,12 +93,21 @@ button:hover{opacity:.9;}
 
 .back-btn{
     display:inline-block;
-    margin-top:20px;
+    margin-top:10px;
     background:#e86a92;
     color:#fff;
     padding:10px 18px;
     border-radius:8px;
-    text-decoration:none;}
+    text-decoration:none;
+    transition:.3s;
+}
+.back-btn:hover{opacity:.9;}
+
+@media (max-width: 600px) {
+  .container{padding:10px;}
+  h2{font-size:22px;}
+  th,td{padding:10px 8px;font-size:13px;}
+}
 </style>
 </head>
 <body>
@@ -88,6 +115,7 @@ button:hover{opacity:.9;}
 <div class="container">
 <h2>📦 Manage Orders</h2>
 
+<div class="table-responsive">
 <table>
 <tr>
 <th>Order ID</th>
@@ -127,6 +155,7 @@ button:hover{opacity:.9;}
 </tr>
 <?php endif; ?>
 </table>
+</div>
 
 <a href="admin_dashboard.php" class="back-btn">← Back to Dashboard</a>
 
