@@ -26,6 +26,14 @@ $total = 0;
 foreach ($_SESSION['cart'] as $item) {
     $total += $item['price'] * $item['quantity'];
 }
+
+/* LOGIN STATE */
+$is_logged_in = false;
+$user_name = "";
+if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
+    $is_logged_in = true;
+    $user_name = $_SESSION['user']['name'] ?? "";
+}
 ?>
 
 <!DOCTYPE html>
@@ -81,16 +89,26 @@ transition:.3s
 
 <!-- HEADER -->
 <header class="header">
-<div class="logo">G🍪🍪dies Cookies</div>
+<div class="logo">SHAZ Cookies</div>
 <nav class="navbar">
 <a href="index.php">Home</a>
 <a href="shop.php">Shop</a>
 <a href="about.php">About</a>
 <a href="contact.php">Contact</a>
 </nav>
-<a href="cart.php" class="cart-btn">
-🛒 <span class="badge"><?= $_SESSION['cart_count']; ?></span>
-</a>
+<div class="header-right">
+    <?php if ($is_logged_in): ?>
+        <span class="user-greeting">👋 <?= htmlspecialchars($user_name); ?></span>
+        <a href="logout.php" class="nav-auth-btn">Logout</a>
+    <?php else: ?>
+        <a href="login.php" class="nav-auth-btn">Login</a>
+        <a href="register.php" class="nav-auth-btn primary">Register</a>
+    <?php endif; ?>
+    <a href="admin_login.php" class="nav-admin-link">👤Admin</a>
+    <a href="cart.php" class="cart-btn">
+        🛒 <span class="badge"><?= (int)$_SESSION['cart_count']; ?></span>
+    </a>
+</div>
 </header>
 
 <section class="cart-page">

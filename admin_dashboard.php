@@ -7,11 +7,31 @@ if(!isset($_SESSION['user_type']) || $_SESSION['user_type'] != 'admin'){
     exit;
 }
 
-/* Dummy data for demo purposes */
-$total_orders = 45;
-$total_users = 120;
-$total_products = 25;
-$total_revenue = 56000; // in LKR
+require_once __DIR__ . '/config.php';
+
+/* Dynamic stats from database */
+$total_orders = 0;
+$total_users = 0;
+$total_products = 0;
+$total_revenue = 0;
+
+if (isset($conn) && $conn instanceof mysqli && !$conn->connect_error) {
+    // Total Orders
+    $res = $conn->query("SELECT COUNT(*) AS cnt FROM orders");
+    if ($res && $row = $res->fetch_assoc()) $total_orders = (int)$row['cnt'];
+
+    // Total Registered Customers (excluding admin)
+    $res = $conn->query("SELECT COUNT(*) AS cnt FROM users WHERE type = 'user'");
+    if ($res && $row = $res->fetch_assoc()) $total_users = (int)$row['cnt'];
+
+    // Total Products
+    $res = $conn->query("SELECT COUNT(*) AS cnt FROM products");
+    if ($res && $row = $res->fetch_assoc()) $total_products = (int)$row['cnt'];
+
+    // Total Revenue (excluding cancelled orders)
+    $res = $conn->query("SELECT COALESCE(SUM(total_price), 0) AS rev FROM orders WHERE status != 'Cancelled'");
+    if ($res && $row = $res->fetch_assoc()) $total_revenue = (float)$row['rev'];
+}
 ?>
 
 <!DOCTYPE html>

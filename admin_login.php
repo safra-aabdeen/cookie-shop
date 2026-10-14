@@ -1,19 +1,45 @@
 <?php
 session_start();
+require_once __DIR__ . '/config.php';
 $error = "";
 
-// Dummy admin credentials for demo
+// Preset admin credentials
 $admin_email = "admin@cookies.lk";
-$admin_password = "admin123"; // In real project: hash password
+$admin_password = "admin123";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
 
-    if($email === $admin_email && $password === $admin_password){
+    $is_admin = false;
+    $admin_name = "Admin";
+
+    // 1. Direct match with preset admin credentials
+    if ($email === $admin_email && $password === $admin_password) {
+        $is_admin = true;
+    } else {
+        // 2. Database check for admin account
+        if (isset($conn) && $conn instanceof mysqli && !$conn->connect_error) {
+            $stmt = $conn->prepare("SELECT id, name, password FROM users WHERE email = ? AND type = 'admin' LIMIT 1");
+            if ($stmt) {
+                $stmt->bind_param("s", $email);
+                $stmt->execute();
+                $res = $stmt->get_result();
+                if ($row = $res->fetch_assoc()) {
+                    if (password_verify($password, $row['password']) || $password === $row['password']) {
+                        $is_admin = true;
+                        $admin_name = $row['name'];
+                    }
+                }
+                $stmt->close();
+            }
+        }
+    }
+
+    if ($is_admin) {
         $_SESSION['user_type'] = 'admin';
-        $_SESSION['user'] = ['name' => 'Admin', 'type'=>'admin'];
-        header('location: admin_dashboard.php');
+        $_SESSION['user'] = ['name' => $admin_name, 'type' => 'admin'];
+        header('Location: admin_dashboard.php');
         exit;
     } else {
         $error = "Invalid email or password!";
@@ -56,6 +82,11 @@ body{margin:0;padding:20px 15px;font-family:'Poppins',sans-serif;background:line
 <input type="password" name="password" placeholder="Password" required>
 <button type="submit">Login</button>
 </form>
+
+<div style="margin-top:20px;font-size:13px;color:#666;">
+    Looking for customer account? <a href="login.php" style="color:var(--primary-pink-dark);font-weight:600;text-decoration:none;">Customer Login</a>
+</div>
+<a href="index.php" style="display:block;margin-top:12px;font-size:13px;color:#888;text-decoration:none;">← Back to Cookie Shop</a>
 </div>
 
 </body>

@@ -3,6 +3,14 @@ session_start();
 if (!isset($_SESSION['cart_count'])) {
     $_SESSION['cart_count'] = 0;
 }
+
+/* LOGIN STATE */
+$is_logged_in = false;
+$user_name = "";
+if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
+    $is_logged_in = true;
+    $user_name = $_SESSION['user']['name'] ?? "";
+}
 ?>
 
 <!DOCTYPE html>
@@ -81,7 +89,17 @@ footer{margin-top:60px;}
 <a href="about.php">About</a>
 <a href="contact.php">Contact</a>
 </nav>
-<a href="cart.php" class="cart-btn">🛒 <span class="badge"><?= $_SESSION['cart_count']; ?></span></a>
+<div class="header-right">
+    <?php if ($is_logged_in): ?>
+        <span class="user-greeting">👋 <?= htmlspecialchars($user_name); ?></span>
+        <a href="logout.php" class="nav-auth-btn">Logout</a>
+    <?php else: ?>
+        <a href="login.php" class="nav-auth-btn">Login</a>
+        <a href="register.php" class="nav-auth-btn primary">Register</a>
+    <?php endif; ?>
+    <a href="admin_login.php" class="nav-admin-link">👤Admin</a>
+    <a href="cart.php" class="cart-btn">🛒 <span class="badge"><?= (int)$_SESSION['cart_count']; ?></span></a>
+</div>
 </header>
 
 <!-- ABOUT PAGE TITLE -->

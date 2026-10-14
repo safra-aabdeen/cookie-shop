@@ -49,7 +49,15 @@ $searchQuery = isset($_GET['q']) ? htmlspecialchars($_GET['q']) : "";
     </nav>
 
     <div class="header-right">
-        <a href="admin_login.php">👤Admin</a>
+        <?php if ($is_logged_in): ?>
+            <span class="user-greeting">👋 <?= htmlspecialchars($user_name); ?></span>
+            <a href="logout.php" class="nav-auth-btn">Logout</a>
+        <?php else: ?>
+            <a href="login.php" class="nav-auth-btn">Login</a>
+            <a href="register.php" class="nav-auth-btn primary">Register</a>
+        <?php endif; ?>
+
+        <a href="admin_login.php" class="nav-admin-link">👤Admin</a>
 
         <a href="cart.php" class="cart-btn">
             🛒 <span class="badge"><?= (int)$_SESSION['cart_count']; ?></span>

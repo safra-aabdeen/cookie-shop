@@ -135,6 +135,57 @@ img {
   margin-left: 5px;
 }
 
+/* AUTH BUTTONS IN HEADER */
+.nav-auth-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--white);
+  padding: 6px 14px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.nav-auth-btn:hover {
+  background: var(--white);
+  color: var(--primary-pink-dark);
+}
+
+.nav-auth-btn.primary {
+  background: var(--white);
+  color: var(--primary-pink-dark);
+}
+
+.nav-auth-btn.primary:hover {
+  background: #fff0f4;
+}
+
+.user-greeting {
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.nav-admin-link {
+  color: var(--white);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.95;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.nav-admin-link:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
 /* =========================
    WELCOME BANNERS
 ========================= */

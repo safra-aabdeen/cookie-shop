@@ -4,6 +4,16 @@ require_once __DIR__ . '/config.php';
 
 $order_success = false;
 
+/* LOGIN STATE */
+$is_logged_in = false;
+$user_name = "";
+$user_email = "";
+if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
+    $is_logged_in = true;
+    $user_name = $_SESSION['user']['name'] ?? "";
+    $user_email = $_SESSION['user']['email'] ?? "";
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['cart'])) {
 
     $user_id = $_SESSION['user_id'] ?? 0;
@@ -131,16 +141,26 @@ border-radius:12px;margin-bottom:20px;box-shadow:0 4px 12px rgba(0,0,0,.1)}
 
 <!-- HEADER -->
 <header class="header">
-<div class="logo">G🍪🍪dies Cookies</div>
+<div class="logo">SHAZ Cookies</div>
 <nav class="navbar">
 <a href="index.php">Home</a>
 <a href="shop.php">Shop</a>
 <a href="about.php">About</a>
 <a href="contact.php">Contact</a>
 </nav>
-<a href="cart.php" class="cart-btn">
-🛒 <span class="badge"><?= $_SESSION['cart_count']; ?></span>
-</a>
+<div class="header-right">
+    <?php if ($is_logged_in): ?>
+        <span class="user-greeting">👋 <?= htmlspecialchars($user_name); ?></span>
+        <a href="logout.php" class="nav-auth-btn">Logout</a>
+    <?php else: ?>
+        <a href="login.php" class="nav-auth-btn">Login</a>
+        <a href="register.php" class="nav-auth-btn primary">Register</a>
+    <?php endif; ?>
+    <a href="admin_login.php" class="nav-admin-link">👤Admin</a>
+    <a href="cart.php" class="cart-btn">
+        🛒 <span class="badge"><?= (int)($_SESSION['cart_count'] ?? 0); ?></span>
+    </a>
+</div>
 </header>
 
 <section class="checkout-page">
@@ -200,8 +220,8 @@ foreach($_SESSION['cart'] as $item):
 
 <div class="checkout-form">
 <form method="POST">
-<input type="text" name="name" placeholder="Full Name" required>
-<input type="email" name="email" placeholder="Email Address" required>
+<input type="text" name="name" placeholder="Full Name" value="<?= htmlspecialchars($user_name); ?>" required>
+<input type="email" name="email" placeholder="Email Address" value="<?= htmlspecialchars($user_email); ?>" required>
 <textarea name="address" placeholder="Delivery Address" rows="3" required></textarea>
 <input type="text" name="contact" placeholder="Contact Number" required>
 <button type="submit">Place Order</button>
