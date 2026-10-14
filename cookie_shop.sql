@@ -150,6 +150,25 @@ LOCK TABLES `users` WRITE;
 INSERT INTO `users` VALUES (1,'Admin','admin@cookies.lk','admin123','admin'),(2,'Safra','safrafathi02@gmail.com','$2y$10$QVgneNhTv3W/TYSH7HMTluuQj.gfCqXnWjJODbXaPNoM6lqkU75s.','user');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `id_tracker`
+--
+
+DROP TABLE IF EXISTS `id_tracker`;
+CREATE TABLE `id_tracker` (
+  `table_name` varchar(50) NOT NULL,
+  `last_id` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`table_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `id_tracker`
+--
+
+LOCK TABLES `id_tracker` WRITE;
+INSERT INTO `id_tracker` VALUES ('products',10),('users',5),('orders',11),('contact_messages',9),('order_items',15);
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

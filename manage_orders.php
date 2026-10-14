@@ -130,7 +130,7 @@ button:hover{opacity:.9;}
 <?php if($result->num_rows > 0): ?>
     <?php while($row = $result->fetch_assoc()): ?>
     <tr>
-        <td><?= $row['id'] ?></td>
+        <td><strong><?= format_id($row['id']) ?></strong></td>
         <td><?= $row['product_names'] ?></td>
         <td><?= $row['quantity'] ?? 0 ?></td>
         <td><?= number_format($row['total_price'],2) ?></td>

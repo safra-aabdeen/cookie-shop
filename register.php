@@ -49,8 +49,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $hashed_pass = password_hash($password, PASSWORD_DEFAULT);
             $type = 'user';
 
-            $insert_stmt = $conn->prepare("INSERT INTO users (name, email, password, type) VALUES (?, ?, ?, ?)");
-            $insert_stmt->bind_param("ssss", $name, $email, $hashed_pass, $type);
+            // Generate permanent unique User ID that is never reused
+            $new_user_id = generate_next_id('users', $conn);
+
+            $insert_stmt = $conn->prepare("INSERT INTO users (id, name, email, password, type) VALUES (?, ?, ?, ?, ?)");
+            $insert_stmt->bind_param("issss", $new_user_id, $name, $email, $hashed_pass, $type);
 
             if ($insert_stmt->execute()) {
                 $insert_stmt->close();

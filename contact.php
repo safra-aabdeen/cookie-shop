@@ -17,8 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Invalid email address.";
     } else {
-        $stmt = $conn->prepare("INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $name, $email, $message);
+        $msg_id = generate_next_id('contact_messages', $conn);
+        $stmt = $conn->prepare("INSERT INTO contact_messages (id, name, email, message) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("isss", $msg_id, $name, $email, $message);
         if ($stmt->execute()) {
             $success = true;
         } else {

@@ -187,7 +187,7 @@ input:focus {
     <form method="POST">
         <div class="form-group">
             <label>User ID</label>
-            <input type="text" value="#<?= (int)$user['id']; ?>" disabled style="background:#f9f9f9;color:#777;">
+            <input type="text" value="<?= format_id($user['id']); ?>" readonly style="background:#f9f9f9;color:#777;font-weight:600;cursor:not-allowed;">
         </div>
 
         <div class="form-group">

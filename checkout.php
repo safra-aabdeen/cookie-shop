@@ -24,16 +24,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['cart'])) {
         $grand_total += ($item['price'] * $item['quantity']);
     }
 
+    // Generate permanent unique Order ID that is never reused
+    $order_id = generate_next_id('orders', $conn);
+
     // Insert order
     $stmt = $conn->prepare(
-        "INSERT INTO orders (user_id, total_price, status, order_date)
-         VALUES (?, ?, 'Pending', NOW())"
+        "INSERT INTO orders (id, user_id, total_price, status, order_date)
+         VALUES (?, ?, ?, 'Pending', NOW())"
     );
-    $stmt->bind_param("id", $user_id, $grand_total);
+    $stmt->bind_param("iid", $order_id, $user_id, $grand_total);
     $stmt->execute();
-
-    // Get order ID
-    $order_id = $conn->insert_id;
+    $stmt->close();
 
     // Insert order items
     $item_stmt = $conn->prepare(
@@ -56,16 +57,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['cart'])) {
             $stmt_p->close();
         }
 
-        // Fallback: If still not found, create a product record so it has an ID
+        // Fallback: If still not found, create a product record with unique non-reused ID
         if ($prod_id <= 0 && !empty($item['name'])) {
-            $stmt_ins = $conn->prepare("INSERT INTO products (name, category, flavour, price, image) VALUES (?, ?, ?, ?, ?)");
+            $prod_id = generate_next_id('products', $conn);
+            $stmt_ins = $conn->prepare("INSERT INTO products (id, name, category, flavour, price, image) VALUES (?, ?, ?, ?, ?, ?)");
             $cat = $item['category'] ?? 'Classic';
             $flav = $item['flavour'] ?? 'Classic';
             $prc = (float)($item['price'] ?? 0);
             $img = $item['image'] ?? 'images/Biskat.jpg';
-            $stmt_ins->bind_param("sssds", $item['name'], $cat, $flav, $prc, $img);
+            $stmt_ins->bind_param("isssds", $prod_id, $item['name'], $cat, $flav, $prc, $img);
             $stmt_ins->execute();
-            $prod_id = (int)$conn->insert_id;
             $stmt_ins->close();
         }
 

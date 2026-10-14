@@ -78,23 +78,29 @@ text-decoration:none;font-weight:500;transition:.3s;
 <th>Actions</th>
 </tr>
 
-<?php while($row = mysqli_fetch_assoc($result)){ ?>
-<tr>
-<td><?= $row['id']; ?></td>
-<td><img src="<?= $row['image']; ?>"></td>
-<td><?= $row['name']; ?></td>
-<td><?= $row['category']; ?></td>
-<td><?= $row['flavour']; ?></td>
-<td><?= number_format($row['price'],2); ?></td>
-<td>
-<a href="edit_product.php?id=<?= $row['id']; ?>" class="btn edit">Edit</a>
-<a href="delete_product.php?id=<?= $row['id']; ?>" 
-   class="btn delete"
-   onclick="return confirm('Are you sure you want to delete this product?')">
-Delete</a>
-</td>
-</tr>
-<?php } ?>
+<?php if ($result && mysqli_num_rows($result) > 0): ?>
+    <?php while($row = mysqli_fetch_assoc($result)){ ?>
+    <tr>
+    <td><strong><?= format_id($row['id']); ?></strong></td>
+    <td><img src="<?= htmlspecialchars($row['image']); ?>" alt="<?= htmlspecialchars($row['name']); ?>"></td>
+    <td><?= htmlspecialchars($row['name']); ?></td>
+    <td><?= htmlspecialchars($row['category']); ?></td>
+    <td><?= htmlspecialchars($row['flavour']); ?></td>
+    <td><?= number_format($row['price'],2); ?></td>
+    <td>
+    <a href="edit_product.php?id=<?= (int)$row['id']; ?>" class="btn edit">Edit</a>
+    <a href="delete_product.php?id=<?= (int)$row['id']; ?>" 
+       class="btn delete"
+       onclick="return confirm('Are you sure you want to delete this product?')">
+    Delete</a>
+    </td>
+    </tr>
+    <?php } ?>
+<?php else: ?>
+    <tr>
+    <td colspan="7" style="padding:25px;color:#888;">No products found. Click "+ Add New Product" to add one.</td>
+    </tr>
+<?php endif; ?>
 
 </table>
 </div>

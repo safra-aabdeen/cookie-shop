@@ -141,7 +141,7 @@ function confirmDelete(){
 <tbody>
 <?php while ($row = $result->fetch_assoc()): ?>
 <tr>
-    <td><?= htmlspecialchars($row['id']) ?></td>
+    <td><strong><?= format_id($row['id']) ?></strong></td>
     <td><?= htmlspecialchars($row['name']) ?></td>
     <td><?= htmlspecialchars($row['email']) ?></td>
     <td>
